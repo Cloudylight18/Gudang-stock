@@ -1,3 +1,5 @@
+"use client"; // Wajib karena menggunakan useRef dan Provider
+
 import { useRef } from "react";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
@@ -23,7 +25,7 @@ import {
 import { PersistGate } from "redux-persist/integration/react";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
-/* REDUX PERSISTENCE */
+/* --- REDUX PERSISTENCE (Mencegah error SSR) --- */
 const createNoopStorage = () => {
   return {
     getItem(_key: any) {
@@ -46,15 +48,17 @@ const storage =
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["global"],
+  whitelist: ["global"], // Hanya simpan state 'global' (dark mode/sidebar)
 };
+
 const rootReducer = combineReducers({
   global: globalReducer,
   [api.reducerPath]: api.reducer,
 });
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-/* REDUX STORE */
+/* --- REDUX STORE CONFIGURATION --- */
 export const makeStore = () => {
   return configureStore({
     reducer: persistedReducer,
@@ -67,24 +71,29 @@ export const makeStore = () => {
   });
 };
 
-/* REDUX TYPES */
+/* --- REDUX TYPES & HOOKS --- */
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
+
+// Gunakan hook ini di seluruh aplikasi Anda, jangan gunakan useDispatch/useSelector biasa
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-/* PROVIDER */
+/* --- PROVIDER COMPONENT --- */
 export default function StoreProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const storeRef = useRef<AppStore>();
+
+  // Pastikan store hanya dibuat satu kali (Singleton)
   if (!storeRef.current) {
     storeRef.current = makeStore();
     setupListeners(storeRef.current.dispatch);
   }
+
   const persistor = persistStore(storeRef.current);
 
   return (

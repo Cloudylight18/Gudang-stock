@@ -1,45 +1,47 @@
-# Build a Fullstack Inventory Management Dashboard
+# 📦 Gudang Stock AI - Smart Inventory System
 
-[![Tutorial Video](https://img.youtube.com/vi/ddKQ8sZo_v8/0.jpg)](https://www.youtube.com/watch?v=ddKQ8sZo_v8)
+Gudang Stock AI adalah platform manajemen inventaris modern yang dirancang untuk efisiensi tinggi menggunakan kecerdasan buatan. Proyek ini dibangun untuk mendigitalisasi gudang konvensional menjadi ekosistem pintar.
 
-Link to related video: https://www.youtube.com/watch?v=ddKQ8sZo_v8
+## 🚀 Fitur Unggulan (AI Powered)
 
-## Tutorial
+- 🔍 **AI Image Search (Vision)**: Temukan stok kain atau barang hanya dengan mengunggah foto. Sistem akan mengenali warna dan motif secara otomatis.
+- 🎙️ **Voice Command Search**: Memungkinkan operasional gudang tanpa tangan (hands-free) dengan pencarian data melalui perintah suara.
+- 📊 **Real-time Analytics**: Dashboard interaktif untuk memantau arus kas, stok populer, dan pengeluaran secara instan.
+- 🔐 **Enterprise Security**: Keamanan data tingkat tinggi menggunakan Clerk Authentication.
+- 📱 **Responsive Design**: Akses penuh melalui desktop, tablet, maupun smartphone.
 
-This repository contains the code corresponding to an in-depth tutorial available on my YouTube channel. It is highly suggested to watch the [tutorial video](https://www.youtube.com/watch?v=ddKQ8sZo_v8) as it includes detailed instructions on how to set up everything, including deploying AWS. This tutorial is designed for both beginners and experts.
+## 🛠️ Tech Stack
 
-Join our [Discord community](https://discord.com/channels/1070200085440376872/1267499814678171698) for discussions about this specific app.
+### Frontend
 
-## Tech Stack
+- **Framework**: Next.js 14/15 (App Router)
+- **State Management**: Redux Toolkit & RTK Query
+- **Styling**: Tailwind CSS
+- **Components**: Material UI Data Grid & Lucide Icons
+- **Auth**: Clerk
 
-- **Next JS**
-- **Tailwind**
-- **Redux Toolkit**
-- **Redux Toolkit Query**
-- **Material UI Data Grid**
-- **Node.js**
-- **Prisma**
-- **AWS EC2**
-- **AWS RDS**
-- **AWS API Gateway**
-- **AWS Amplify**
-- **AWS S3**
+### Backend
 
-## Resources and Links
+- **Server**: Node.js & Express
+- **ORM**: Prisma
+- **Database**: PostgreSQL
+- **AI Integration**: Gemini Pro Vision / OpenAI API (In Development)
 
-### Image Files
+## 📂 Struktur Proyek
 
-- [Server assets to download](https://github.com/ed-roh/inventory-management/tree/master/server/assets)
+- `/client`: Frontend aplikasi menggunakan Next.js.
+- `/server`: Backend API menggunakan Node.js dan konfigurasi database Prisma.
 
-### Configuration and Code
+## ⚙️ Cara Menjalankan
 
-- [tailwind.config.ts](https://github.com/ed-roh/inventory-management/blob/master/client/tailwind.config.ts) (to copy)
-- [Redux store file](https://github.com/ed-roh/inventory-management/blob/master/client/src/app/redux.tsx) (to copy)
-- [Seed files for database](https://github.com/ed-roh/inventory-management/blob/master/server/prisma/seed.ts) (to copy)
-- [Seed data files](https://github.com/ed-roh/inventory-management/tree/master/server/prisma/seedData) (to download)
+### Prasyarat
 
-### Additional Resources
+- Node.js versi terbaru
+- PostgreSQL database aktif
 
-- [Data model diagram](https://drawsql.app/teams/team-3023/diagrams/56-inventorymanagement)
-- [Prisma schema file](https://github.com/ed-roh/inventory-management/blob/master/server/prisma/schema.prisma)
-- [AWS commands](https://github.com/ed-roh/inventory-management/blob/master/server/aws-ec2-instructions.md)
+### Langkah Instalasi
+
+1. Clone repositori ini:
+   ```bash
+   git clone [https://github.com/Cloudylight18/Gudang-stock.git](https://github.com/Cloudylight18/Gudang-stock.git)
+   ```

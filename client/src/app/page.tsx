@@ -1,5 +1,6 @@
-import Dashboard from "@/app/dashboard/page";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <Dashboard />;
+  // Begitu halaman utama diakses, langsung arahkan ke /dashboard
+  redirect("/dashboard");
 }
