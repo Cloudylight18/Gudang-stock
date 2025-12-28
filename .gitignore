@@ -1,0 +1,40 @@
+# 1. Dependency folders
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# 2. Environment files (Sangat Penting! - Diperketat)
+# Memblokir SEMUA file yang berawalan .env di folder mana pun
+.env
+.env*.local
+.env.example
+client/.env*
+server/.env*
+**/.env
+**/.env.local
+
+# 3. Next.js & Build outputs
+client/.next/
+client/out/
+dist/
+build/
+server/dist/
+
+# 4. IDE / Editor & OS
+.vscode/
+.idea/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 5. Prisma & Database
+server/prisma/*.db
+server/prisma/*.db-journal
+# Jika Anda menggunakan SQLite untuk testing lokal
+*.sqlite
+*.sqlite-journal
+
+# 6. Clerk & Auth (Jika ada file cache/config khusus)
+.clerk/

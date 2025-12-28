@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# next.js output
+.next
+out
+build
+
+# ignore config files that cause parsing errors
+next.config.mjs
+postcss.config.mjs
+tailwind.config.ts
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# misc
+.DS_Store
+*.tsbuildinfo

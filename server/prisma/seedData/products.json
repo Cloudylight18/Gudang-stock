@@ -1,0 +1,35 @@
+[
+  {
+    "productId": "8990011223344",
+    "name": "Katun Rayon Premium",
+    "Quantity": 120,
+    "image": "/kain-rayon.jpg",
+    "jenisKain": "Katun",
+    "warna" : "Merah Maroon - Polos",
+    "Desain": " - ",
+    "width": 150,
+    "location": "Blok A-01-1"
+  },
+  {
+    "productId": "8990011225566",
+    "name": "Sutra Satin Silk",
+    "Quantity": 45,
+    "image": "/sutra-silk.jpg",
+    "jenisKain": "Sutra",
+    "warna" :"Gold - Motif Floral",
+    "Desain": " - ",
+    "width": 115,
+    "location": "Blok B-05-2"
+  },
+  {
+    "productId": "8990011227788",
+    "name": "Linen Slub Import",
+    "Quantity": 15,
+    "image": "/linen-slub.jpg",
+    "jenisKain": "Linen",
+    "warna" : "Beige - Tekstur Garis",
+    "Desain": "-",
+    "width": 145,
+    "location": "Blok A-03-3"
+  }
+]
