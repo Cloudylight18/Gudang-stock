@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
  * Membuat tampilan tab browser lebih profesional dan mendukung branding AI.
  */
 export const metadata: Metadata = {
-  title: "Gudang AI | Smart Inventory System",
+  title: "Stock AI | Smart Inventory System",
   description: "Sistem Manajemen Inventaris Kain berbasis AI dikembangkan oleh Rafi Darajat. Solusi cerdas untuk pelacakan stok menggunakan Vision dan Voice.",
   keywords: ["Inventory Management", "AI Vision", "Voice Search", "Gudang Kain", "Smart Warehouse"],
   authors: [{ name: "Rafi Darajat" }],
@@ -42,6 +42,10 @@ export default function RootLayout({
           colorPrimary: "#4f46e5", // Menggunakan warna Indigo khas branding kita
         },
       }}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/dashboard"
     >
       <html lang="id">
         <body className={`${inter.className} bg-gray-50 text-gray-900 antialiased`}>

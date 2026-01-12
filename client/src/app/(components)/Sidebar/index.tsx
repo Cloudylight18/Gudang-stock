@@ -94,7 +94,7 @@ const Sidebar = () => {
             isSidebarCollapsed ? "hidden" : "block"
           } font-black text-xl tracking-tight text-gray-800`}
         >
-          GUDANG <span className="text-indigo-600">AI</span>
+          Stock <span className="text-indigo-600">AI</span>
         </h1>
 
         <button
@@ -114,33 +114,33 @@ const Sidebar = () => {
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/inventory"
+          href="/Detail-Barang"
           icon={Archive}
-          label="Inventory"
+          label="Detail Barang"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/products"
+          href="/Daftar -Barang"
           icon={Clipboard}
-          label="Stock Products"
+          label="Daftar Barang"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/users"
+          href="/Fitur-Ai"
           icon={User}
-          label="Team Members"
+          label="Fitur AI"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/settings"
+          href="/Laporan-Gudang"
           icon={SlidersHorizontal}
-          label="System Settings"
+          label="Laporan Gudang"
           isCollapsed={isSidebarCollapsed}
         />
         <SidebarLink
-          href="/expenses"
+          href="/Pengaturan"
           icon={CircleDollarSign}
-          label="Finance"
+          label="Pengaturan"
           isCollapsed={isSidebarCollapsed}
         />
       </div>
