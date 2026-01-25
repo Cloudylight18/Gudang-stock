@@ -14,19 +14,42 @@ body,
 .app {
   height: 100%;
   width: 100%;
-  @apply text-sm;
-  @apply bg-gray-500;
-  @apply text-gray-900;
+  /* Menggunakan bg-slate-50 agar bersih seperti Stock Vision */
+  @apply text-sm bg-slate-50 text-gray-900; 
 }
 
+/* --- Responsive Grid System --- */
+
+/* Default: Ukuran HP (Mobile) */
+.custom-grid-rows {
+  display: grid;
+  /* JANGAN gunakan repeat(8, ...) di HP agar tidak tumpang tindih */
+  grid-template-columns: 1fr; 
+  grid-template-rows: auto;
+  /* Memberikan jarak yang cukup antar elemen di HP */
+  gap: 1.5rem; 
+  padding: 1rem;
+}
+
+/* Tablet (min-width: 768px) */
 @media (min-width: 768px) {
   .custom-grid-rows {
-    grid-template-rows: repeat(8, 20vh);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, auto);
+    gap: 2rem;
   }
 }
 
+/* Laptop/Desktop (min-width: 1280px) */
 @media (min-width: 1280px) {
   .custom-grid-rows {
-    grid-template-rows: repeat(8, 7.5vh);
+    grid-template-columns: repeat(4, 1fr);
+    /* Gunakan min-content agar tinggi kotak mengikuti isi, bukan layar */
+    grid-template-rows: repeat(2, min-content);
+    gap: 2.5rem;
+    padding: 2rem;
   }
 }
+
+/* Menghilangkan Peringatan CSS di VS Code */
+/* Jika Anda masih melihat garis kuning, pastikan ekstensi Tailwind CSS IntelliSense terpasang */

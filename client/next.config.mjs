@@ -2,24 +2,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Mengizinkan Next.js Image Optimization untuk unoptimized local assets
+    unoptimized: true, 
     remotePatterns: [
       {
-        protocol: "https",
-        // Format Virtual-Host Style (Lebih stabil untuk S3)
-        hostname: "s3-inventorymanagement.s3.us-east-2.amazonaws.com",
-        port: "",
+        protocol: "http",
+        hostname: "localhost",
+        port: "3001", // Port backend Anda
         pathname: "/**",
       },
       {
         protocol: "https",
-        // Format alternatif jika format di atas masih 301
-        hostname: "s3-inventorymanagement.us-east-2.amazonaws.com",
-        port: "",
-        pathname: "/**",
+        hostname: "dobrmzovncvkqqilkvcv.supabase.co",
+        pathname: "/storage/v1/object/public/**",
       },
       {
         protocol: "https",
-        // WAJIB: Agar foto profil Clerk bisa muncul
         hostname: "img.clerk.com",
         port: "",
         pathname: "/**",

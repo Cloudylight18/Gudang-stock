@@ -4,22 +4,38 @@ import React, { useEffect } from "react";
 import Navbar from "@/app/(components)/Navbar";
 import Sidebar from "@/app/(components)/Sidebar";
 import StoreProvider, { useAppSelector } from "./redux";
-import { usePathname } from "next/navigation"; // Import ini untuk cek posisi halaman
+import { usePathname, useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
   );
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
-  const pathname = usePathname(); // Ambil URL saat ini
+  const pathname = usePathname();
+  const router = useRouter();
 
-  // Tentukan apakah ini halaman autentikasi (Login/Register)
-  const isAuthPage =
-    pathname === "/sign-in" ||
-    pathname === "/sign-up" ||
-    pathname.startsWith("/sign-in/") ||
-    pathname.startsWith("/sign-up/");
+  // 1. Definisikan rute publik secara eksplisit
+  const isAuthPage = pathname === "/login" || pathname === "/register" || pathname === "/";
 
+  // 2. AUTO-PROTECTION Logic
+  useEffect(() => {
+    const token = Cookies.get("token");
+    
+    if (!token) {
+      // Jika tidak ada token dan user mencoba masuk ke area terproteksi
+      if (!isAuthPage) {
+        router.push("/login");
+      }
+    } else {
+      // Jika sudah login tapi masih di halaman login/register
+      if (isAuthPage) {
+        router.push("/dashboard");
+      }
+    }
+  }, [isAuthPage, pathname, router]);
+
+  // Management Tema (Dark/Light Mode)
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
@@ -30,34 +46,30 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isDarkMode]);
 
-  // JIKA HALAMAN LOGIN/REGISTER: Tampilkan bersih tanpa Sidebar/Navbar
+  // 3. RENDER HALAMAN AUTH (Tanpa Sidebar/Navbar)
   if (isAuthPage) {
     return (
-      <div
-        className={`${
-          isDarkMode ? "dark" : "light"
-        } min-h-screen w-full bg-gray-50 text-gray-900`}
-      >
-        {children}
+      <div className={`min-h-screen w-full bg-gray-50 text-gray-900 ${isDarkMode ? "dark" : ""}`}>
+        <main className="w-full h-full">
+          {children}
+        </main>
       </div>
     );
   }
 
-  // JIKA HALAMAN DASHBOARD: Tampilkan lengkap dengan Sidebar & Navbar
+  // 4. RENDER HALAMAN DASHBOARD (Layout Lengkap)
   return (
-    <div
-      className={`${
-        isDarkMode ? "dark" : "light"
-      } flex bg-gray-50 text-gray-900 w-full min-h-screen`}
-    >
+    <div className={`flex bg-gray-200 text-gray-900 w-full min-h-screen ${isDarkMode ? "dark" : ""}`}>
       <Sidebar />
       <main
-        className={`flex flex-col w-full h-full py-7 px-9 bg-gray-50 transition-all duration-300 ${
+        className={`flex flex-col w-full h-full py-7 px-9 bg-gray-50 dark:bg-slate-900 transition-all duration-300 ${
           isSidebarCollapsed ? "md:pl-24" : "md:pl-72"
         }`}
       >
         <Navbar />
-        {children}
+        <div className="mt-4">
+          {children}
+        </div>
       </main>
     </div>
   );

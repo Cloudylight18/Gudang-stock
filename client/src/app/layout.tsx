@@ -2,20 +2,15 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import DashboardWrapper from "./dashboardWrapper";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
-/**
- * REVISI METADATA: 
- * Membuat tampilan tab browser lebih profesional dan mendukung branding AI.
- */
 export const metadata: Metadata = {
-  title: "Stock AI | Smart Inventory System",
-  description: "Sistem Manajemen Inventaris Kain berbasis AI dikembangkan oleh Rafi Darajat. Solusi cerdas untuk pelacakan stok menggunakan Vision dan Voice.",
+  title: "Stock Vision | Smart Inventory System",
+  description: "Sistem Manajemen Inventaris Kain berbasis AI dikembangkan oleh Rafi Darajat.",
   keywords: ["Inventory Management", "AI Vision", "Voice Search", "Gudang Kain", "Smart Warehouse"],
   authors: [{ name: "Rafi Darajat" }],
-  // Menghubungkan ke aset favicon yang baru Anda buat di folder public
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -28,35 +23,46 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    /**
-     * CLERK PROVIDER: 
-     * Mengamankan seluruh aplikasi. User harus login untuk masuk ke DashboardWrapper.
-     */
-    <ClerkProvider
-      appearance={{
-        layout: {
-          logoPlacement: "inside",
-          socialButtonsVariant: "iconButton",
-        },
-        variables: {
-          colorPrimary: "#4f46e5", // Menggunakan warna Indigo khas branding kita
-        },
-      }}
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      afterSignInUrl="/dashboard"
-      afterSignUpUrl="/dashboard"
-    >
-      <html lang="id">
-        <body className={`${inter.className} bg-gray-50 text-gray-900 antialiased`}>
-          {/* DashboardWrapper menangani:
-            1. Redux Provider (State Management)
-            2. Layout (Sidebar, Navbar)
-            3. Dark Mode Toggle
-          */}
-          <DashboardWrapper>{children}</DashboardWrapper>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="id">
+      <body className={`${inter.className} bg-gray-50 text-gray-900 antialiased`}>
+        {/* Toaster disetel ke tema Emerald agar selaras dengan UI Stock Vision */}
+        <Toaster 
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            success: {
+              style: {
+                background: '#10b981', // Emerald 500
+                color: '#fff',
+                borderRadius: '16px',
+                fontSize: '12px',
+                fontWeight: '900',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                padding: '16px',
+                border: '2px solid rgba(255,255,255,0.2)',
+              },
+              iconTheme: {
+                primary: '#fff',
+                secondary: '#10b981',
+              },
+            },
+            error: {
+              style: {
+                background: '#ef4444',
+                color: '#fff',
+                borderRadius: '16px',
+                fontSize: '12px',
+                fontWeight: '900',
+                textTransform: 'uppercase',
+              },
+            },
+          }}
+        />
+        
+        {/* DashboardWrapper sekarang mengontrol flow aplikasi tanpa gangguan Clerk */}
+        <DashboardWrapper>{children}</DashboardWrapper>
+      </body>
+    </html>
   );
 }
