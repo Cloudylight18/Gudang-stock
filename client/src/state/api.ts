@@ -8,7 +8,6 @@ export interface Layout {
   baris: string;
   kolom: string;
   totalKain?: number;
-  // Tambahkan field meter/yard agar sinkron dengan komponen dashboard
   totalMeter?: number;
   totalYard?: number;
 }
@@ -30,9 +29,11 @@ export interface Product {
   layout?: Layout;
   coordinateX?: number;
   coordinateY?: number;
-  // Tambahkan field spesifik jika ada
   stockMeter?: number;
   stockYard?: number;
+  // --- TAMBAHAN UNTUK SINRONISASI AI ---
+  description?: string;   // Deskripsi hasil generate Gemini
+  imageVector?: string;   // Koordinat matematika dari Xenova
 }
 
 export interface SmartSearchResult {
@@ -44,10 +45,12 @@ export interface SmartSearchResult {
   imageUrl: string;
   quality: string;
   locationName: string;
+  description?: string; // Deskripsi AI juga muncul di hasil cari
   mapPosition: {
     x: number | null;
     y: number | null;
   };
+  score?: number; // Skor kemiripan visual
   isStockEnough: boolean;
 }
 
@@ -95,7 +98,6 @@ export const api = createApi({
   tagTypes: ["DashboardMetrics", "Products", "Users", "Expenses", "StockLogs", "Layouts", "AISearch"],
   endpoints: (build) => ({
     
-
     getDashboardMetrics: build.query<DashboardMetrics, void>({
       query: () => "/dashboard",
       providesTags: ["DashboardMetrics"],
@@ -103,7 +105,7 @@ export const api = createApi({
 
     getLayouts: build.query<Layout[], void>({
       query: () => "/layouts",
-      providesTags: ["Layouts"], // Sangat penting agar dashboard bisa refetch
+      providesTags: ["Layouts"],
     }),
 
     getLayoutDetail: build.query<Layout, string>({
@@ -142,6 +144,16 @@ export const api = createApi({
           : [{ type: "Products", id: "LIST" }],
     }),
 
+    // --- ENDPOINT BARU: PENCARIAN AI (IMAGE/VOICE) ---
+    searchSmartAI: build.mutation<SmartSearchResult[], FormData>({
+      query: (formData) => ({
+        url: "/products/search-ai",
+        method: "POST",
+        body: formData, // Mengirim Gambar atau Audio
+      }),
+      invalidatesTags: ["AISearch"],
+    }),
+
     getProductByBarcode: build.query<Product, string>({
       query: (barcode) => `/products/scan/${barcode}`,
       providesTags: (result, error, barcode) => [{ type: "Products", id: barcode }],
@@ -153,7 +165,6 @@ export const api = createApi({
         method: "POST",
         body: newProductData,
       }),
-      // Tambahkan "Layouts" di sini agar daftar layout di dashboard ikut update stoknya
       invalidatesTags: ["Products", "DashboardMetrics", "StockLogs", "Layouts"],
     }),
 
@@ -167,7 +178,7 @@ export const api = createApi({
         { type: "Products", id: productId },
         { type: "Products", id: "LIST" },
         "DashboardMetrics",
-        "Layouts", // Refresh denah dan tabel layout
+        "Layouts",
         "StockLogs"
       ],
     }),
@@ -204,7 +215,7 @@ export const api = createApi({
         { type: "Products", id: productId },
         { type: "Products", id: "LIST" },
         "DashboardMetrics",
-        "Layouts", // Pastikan ringkasan layout di dashboard ikut berubah angkanya
+        "Layouts",
         "StockLogs",
       ],
     }),
@@ -219,6 +230,7 @@ export const api = createApi({
 export const {
   useGetDashboardMetricsQuery,
   useGetProductsQuery,
+  useSearchSmartAIMutation, // Export hook baru untuk AI
   useGetProductByBarcodeQuery,
   useLazyGetProductByBarcodeQuery,
   useCreateProductMutation,

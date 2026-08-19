@@ -24,11 +24,11 @@ const BarangKeluarPage = () => {
     <div className="mx-auto pb-10 w-full p-4 md:p-8 bg-[#f8fafc] min-h-screen">
       <div className="mb-12">
         <h1 className="text-4xl font-[900] text-slate-900 tracking-tighter uppercase italic leading-none">
-          Outgoing <span className="text-rose-600">Goods</span>
+          Barang <span className="text-rose-600">Keluar</span>
         </h1>
         <p className="text-slate-400 text-[10px] font-[1000] uppercase tracking-[0.3em] mt-3 flex items-center gap-2 italic">
           <ArrowUpRight size={14} className="text-rose-500" />
-          Arsip pengiriman & pemotongan stok
+          Arsip pengiriman 
         </p>
       </div>
 

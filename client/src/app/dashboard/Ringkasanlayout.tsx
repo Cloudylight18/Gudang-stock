@@ -102,8 +102,8 @@ const CardSalesSummary = () => {
               <thead className="sticky top-0 bg-white/95 backdrop-blur-md z-10">
                 <tr className="text-[9px] uppercase tracking-[0.2em] text-slate-400 font-black border-b border-slate-50">
                   <th className="px-6 py-4">Kode Rak</th>
-                  <th className="px-6 py-4 text-center">Volume (M)</th>
-                  <th className="px-6 py-4 text-center">Volume (Yd)</th>
+                  <th className="px-6 py-4 text-center">Quantity (Meter)</th>
+                  <th className="px-6 py-4 text-center">Quantity (Yards)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">

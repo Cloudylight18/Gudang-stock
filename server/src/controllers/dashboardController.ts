@@ -8,8 +8,6 @@ export const getDashboardMetrics = async (
   res: Response
 ): Promise<void> => {
   try {
-    // 1. POPULAR PRODUCTS (Produk dengan stok terbanyak / paling aktif)
-    // Kita sertakan info layout/rak agar dashboard lebih informatif
     const popularProducts = await prisma.products.findMany({
       take: 15,
       include: {
@@ -20,8 +18,6 @@ export const getDashboardMetrics = async (
       },
     });
 
-    // 2. OPERATIONAL SUMMARY (Sales vs Purchase)
-    // Di skema Anda: totalMasuk (Purchase), totalKeluar (Sales)
     const operasionalSummary = await prisma.operasionalSummary.findMany({
       take: 25,
       orderBy: {
@@ -29,7 +25,6 @@ export const getDashboardMetrics = async (
       },
     });
 
-    // Mapping agar nama property sesuai dengan ekspektasi Frontend (recharts)
     const salesSummary = operasionalSummary.map((item) => ({
       salesSummaryId: item.summaryId,
       totalValue: item.totalKeluar,

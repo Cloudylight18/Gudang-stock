@@ -10,22 +10,18 @@ const prisma = new PrismaClient();
 
 export const searchByImage = async (req: Request, res: Response): Promise<void> => {
   let compressedPath = "";
-  const originalPath = req.file?.path;
+  const file = req.file;
   const bucketName = "gudang stock kain";
 
   try {
     const { message } = req.body;
-    const file = req.file;
 
-    // 1. PROSES GAMBAR (Visual Reference)
+    // --- 1. PROSES GAMBAR UNTUK RIWAYAT (SUPABASE) ---
     let supabasePublicUrl: string | null = null;
     if (file) {
       compressedPath = path.join(path.dirname(file.path), `proc_${Date.now()}.webp`);
-      await sharp(file.path)
-        .resize(800)
-        .webp({ quality: 70 })
-        .toFile(compressedPath);
-
+      await sharp(file.path).resize(800).webp({ quality: 70 }).toFile(compressedPath);
+      
       const fileBuffer = await fs.readFile(compressedPath);
       const fileName = `visual-search/${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`;
       
@@ -38,76 +34,75 @@ export const searchByImage = async (req: Request, res: Response): Promise<void> 
       }
     }
 
-    // 2. LOGIKA ANALISIS TEKS LANJUTAN
-    // Pecah berdasarkan koma untuk frasa utuh
-    const phrases: string[] = message 
-      ? message.toLowerCase().split(',').map((p: string) => p.trim()).filter((p: string) => p.length > 0)
+    // --- 2. EKSTRAKSI KATA KUNCI DISIPLIN ---
+    // Membersihkan kata umum agar AI fokus pada subjek (warna, motif, jenis bahan)
+    const stopWords = ["cari", "yang", "ada", "di", "dan", "dengan", "mirip", "tolong", "cek", "kain", "bahan", "warna", "motif"];
+    
+    // Ambil kata kunci unik, minimal 3 karakter
+    const keywords: string[] = message
+      ? message.toLowerCase()
+          .replace(/[^\w\s]/gi, '') // Hapus simbol/tanda baca
+          .split(/\s+/)
+          .filter((word: string) => !stopWords.includes(word) && word.length >= 3)
       : [];
 
-    const stopWords = ["cari", "yang", "ada", "di", "dan", "dengan", "mirip"];
-    const singleWords: string[] = message
-      ? message.toLowerCase().split(/\s+/).filter((word: string) => !stopWords.includes(word) && word.length > 2)
-      : [];
-
-    const allKeywords = Array.from(new Set([...phrases, ...singleWords]));
-
-    // 3. QUERY DATABASE
-    const searchConditions = allKeywords.map((kw: string) => ({
+    // --- 3. QUERY DATABASE DENGAN LOGIKA "AND" (STRICT) ---
+    // Hasil hanya akan muncul jika SEMUA kata kunci ditemukan dalam kolom produk
+    const strictConditions: Prisma.ProductsWhereInput[] = keywords.map((kw: string) => ({
       OR: [
-        { name: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } },
-        { description: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } },
-        { color: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } },
-        { design: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } },
-        { kombinasi: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } },
-        // @ts-ignore
-        { category: { contains: kw, mode: 'insensitive' as Prisma.QueryMode } }, 
+        { name: { contains: kw, mode: 'insensitive' } },
+        { description: { contains: kw, mode: 'insensitive' } },
+        { color: { contains: kw, mode: 'insensitive' } },
+        { design: { contains: kw, mode: 'insensitive' } },
+        { category: { contains: kw, mode: 'insensitive' } }
       ]
     }));
 
     const rawResults = await prisma.products.findMany({
-      where: searchConditions.length > 0 ? { OR: searchConditions } : {},
+      // Menggunakan AND memastikan hasil pencarian mengerucut/sempit (Akurasi Tinggi)
+      where: strictConditions.length > 0 ? { AND: strictConditions } : {}, 
       include: { layout: true },
-      take: 100 
+      take: 20 
     });
 
-    // 4. LOGIKA SCORING (Akurasi Tinggi)
+    // --- 4. SCORING UNTUK VALIDASI AKHIR ---
     const rankedResults = rawResults.map(product => {
       let score = 0;
-      const productName = product.name.toLowerCase();
-      const productDesc = (product.description || "").toLowerCase();
-      const productDesign = (product.design || "").toLowerCase();
-      // @ts-ignore
-      const productCategory = product.category?.toLowerCase() || "";
+      const pName = product.name.toLowerCase();
+      const pDesc = (product.description || "").toLowerCase();
+      const pColor = (product.color || "").toLowerCase();
+      const pDesign = (product.design || "").toLowerCase();
 
-      allKeywords.forEach((kw: string) => {
-        if (productName.includes(kw)) score += 25;
-        if (productCategory.includes(kw)) score += 20;
-        if (productDesign.includes(kw)) score += 15;
-        if (productDesc.includes(kw)) score += 10;
-
-        // PERBAIKAN DI SINI: Menambahkan tipe : string pada phrase
-        phrases.forEach((phrase: string) => {
-            if (productName.includes(phrase)) score += 30; 
-        });
+      keywords.forEach((kw: string) => {
+        // Bonus skor jika kata kunci ditemukan di lokasi strategis
+        if (pName.includes(kw)) score += 40;
+        if (pColor.includes(kw)) score += 30;
+        if (pDesign.includes(kw)) score += 20;
+        if (pDesc.includes(kw)) score += 10;
+        
+        // Exact match bonus (jika kata kunci sama persis dengan kolom warna/motif)
+        if (pColor === kw || pDesign === kw) score += 50;
       });
-
-      if (product.stockQuantity > 0) score += 5;
 
       return { ...product, searchScore: score };
     })
-    .filter(p => p.searchScore > 0) 
     .sort((a, b) => b.searchScore - a.searchScore);
 
+    // --- 5. RESPONSE ---
     res.json({
       success: true,
-      extractedKeywords: allKeywords,
-      phrasesFound: phrases,
-      results: rankedResults.slice(0, 20),
+      keywordsUsed: keywords,
+      results: rankedResults,
       historyImageUrl: supabasePublicUrl
     });
 
   } catch (error: any) {
-    console.error("Search Error:", error.message);
-    res.status(500).json({ success: false, error: "Gagal menjalankan pencarian akurat." });
+    console.error("❌ Search Error:", error.message);
+    res.status(500).json({ success: false, error: "Pencarian gagal diproses." });
+  } finally {
+    // Hapus file sampah di server
+    if (compressedPath && existsSync(compressedPath)) {
+      try { await fs.unlink(compressedPath); } catch (e) {}
+    }
   }
 };

@@ -36,7 +36,7 @@ const LaporanBarangMasuk = () => {
       {/* HEADER */}
       <div className="mb-12">
         <h1 className="text-4xl font-[900] text-slate-900 tracking-tighter uppercase italic leading-none">
-          Incoming <span className="text-emerald-600">Goods</span>
+          Barang <span className="text-emerald-600">Masuk</span>
         </h1>
         <p className="text-slate-400 text-[10px] font-[1000] uppercase tracking-[0.3em] mt-3 flex items-center gap-2 italic">
           <ArrowDownCircle size={14} className="text-emerald-500" />

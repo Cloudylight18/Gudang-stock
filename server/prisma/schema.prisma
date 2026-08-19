@@ -36,6 +36,7 @@ model Products {
   design        String?
   category      String?  // POLOSAN atau PRINTING
   description   String?  @db.Text 
+  imageVector   String?   @db.Text
   
   // Relasi Lokasi Rak
   location      String?  
